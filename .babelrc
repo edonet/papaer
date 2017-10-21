@@ -1,0 +1,15 @@
+{
+    "compact": "1000kb",
+    "presets": [
+        ["env",  { "modules": false }], "react", "stage-3"
+    ],
+    "plugins": [ "transform-runtime" ],
+    "env": {
+        "development": {
+            "plugins": [ "react-hot-loader/babel" ]
+        },
+        "production": {
+            "presets": [ "react-optimize" ]
+        }
+    }
+}

@@ -1,2 +1,2 @@
-# papaer
+# paper
 paper for svg
