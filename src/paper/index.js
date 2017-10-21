@@ -152,7 +152,7 @@ export default class Paper extends Component {
             }
 
             // 滚动到最近视图
-            this.scroller.animateTo(curr * 100);
+            this.scroller.animateTo(curr * 100, 250, 'ease-out');
         }
     }
 

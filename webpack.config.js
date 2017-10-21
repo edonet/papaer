@@ -40,8 +40,7 @@ module.exports = {
         rules: [
             {
                 test: /\.jsx?$/,
-                // include: /webpack-dev-server/,
-                exclude: /(node_modules|bower_components)/,
+                exclude: /node_modules\/(?!webpack-dev-server)/,
                 loader: 'babel-loader'
             }
         ]
