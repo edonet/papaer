@@ -14,7 +14,7 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Paper from './paper';
+import App from './views';
 
 
 /**
@@ -35,7 +35,7 @@ export const render = (el, data) => {
     }
 
     // 渲染元素
-    ReactDOM.render(<Paper { ...data } />, el);
+    ReactDOM.render(<App { ...data } />, el);
 };
 
 

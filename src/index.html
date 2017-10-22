@@ -30,10 +30,17 @@
         <script crossorigin src="https://cdn.bootcss.com/react/16.0.0/umd/react.production.min.js"></script>
         <script crossorigin src="https://cdn.bootcss.com/react-dom/16.0.0/umd/react-dom.production.min.js"></script>
         <script>
-            // window.alert(ReactDom);
-            window.onerror = function(err) {
-                window.alert(err)
+
+            // 添加【weinre】调试脚本
+            if (location.search.indexOf('?weinre') === 0) {
+                var script = document.createElement('script'),
+                    url = 'http://' + location.hostname + ':10024/target/target-script-min.js#anonymous';
+
+                // 添加调试脚本
+                script.src = url;
+                document.body.appendChild(script);
             }
+
         </script>
     </body>
 </html>
