@@ -12,8 +12,7 @@
  * 加载依赖
  *****************************************
  */
-import Event from './event';
-import { assign, translate, viewUpdater, animate, ease } from './utils';
+import { assign, translate, viewUpdater, animate, ease } from '../lib/utils';
 
 
 /**
@@ -21,11 +20,10 @@ import { assign, translate, viewUpdater, animate, ease } from './utils';
  * 定义滚动控件
  *****************************************
  */
-export default class Scroller extends Event {
+export default class Swiper {
 
     /* 初始化对象 */
     constructor(options) {
-        super();
 
         // 初始化数据模型
         this.$$model = {

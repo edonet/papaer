@@ -14,9 +14,8 @@
  */
 import React, { Component, Children } from 'react';
 import { absolute } from '../lib/utils';
-import Event from '../lib/event';
-import Scroller from '../lib/scroller';
 import Move from '../touch/move';
+import Swiper from './swiper';
 
 
 /**
@@ -42,8 +41,7 @@ export default class AppSwiper extends Component {
         // 初始化组件属性
         this.target = null;
         this.gesture =[];
-        this.event = new Event();
-        this.scroller = new Scroller();
+        this.swiper = new Swiper();
 
         // 绑定事件回调
         this.handleMount = this.handleMount.bind(this);
@@ -84,7 +82,7 @@ export default class AppSwiper extends Component {
 
     /* 更新组件 */
     componentDidUpdate() {
-        this.scroller.updateView();
+        this.swiper.updateView();
     }
 
     /* 监听元素加载 */
@@ -101,7 +99,7 @@ export default class AppSwiper extends Component {
         this.height = el.clientHeight;
 
         // 更新滚动视图
-        this.scroller.updateView({
+        this.swiper.updateView({
             target: el,
             views: el.childNodes,
             overlap: this.props.overlap || 0
@@ -126,12 +124,12 @@ export default class AppSwiper extends Component {
 
         // 滚动元素
         if (name === 'moving') {
-            return this.scroller.scrollBy(- 100 * touch.dx / this.width);
+            return this.swiper.scrollBy(- 100 * touch.dx / this.width);
         }
 
         // 滚动结束
         if (name === 'moveEnd') {
-            let position = this.scroller.getPosition(),
+            let position = this.swiper.getPosition(),
                 curr = Math.round(position / 100),
                 over = (
                     touch.dx &&
@@ -146,7 +144,7 @@ export default class AppSwiper extends Component {
             }
 
             // 滚动到最近视图
-            this.scroller.animateTo(curr * 100, 250, 'ease-out');
+            this.swiper.animateTo(curr * 100, 250, 'ease-out');
         }
     }
 
@@ -155,6 +153,6 @@ export default class AppSwiper extends Component {
         this.target = null;
         this.width = null;
         this.height = null;
-        this.scroller.destroy();
+        this.swiper.destroy();
     }
 }
