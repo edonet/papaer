@@ -13,6 +13,7 @@
  *****************************************
  */
 import { viewUpdater, assign, transform, hasPerspective, animate, ease } from '../lib/utils';
+import Event from '../lib/event';
 
 
 /**
@@ -20,10 +21,11 @@ import { viewUpdater, assign, transform, hasPerspective, animate, ease } from '.
  * 定义缩放控件
  *****************************************
  */
-export default class Scaler {
+export default class Scaler extends Event {
 
     // 初始化控件
     constructor() {
+        super();
 
         // 初始化属性
         this.target = null;
@@ -64,9 +66,10 @@ export default class Scaler {
 
     /* 更新元素样式 */
     updateView({ x, y, scale } = this.matrix) {
+
         this.target && assign(this.target.style, transform(
             `translate(${x}px, ${y}px)${hasPerspective ? ' translateZ(0)' : ''} scale(${scale * this.matrix.minScale})`
-        ));
+        )) && this.emit('update', this.matrix);
     }
 
     /* 位置到指定位置 */

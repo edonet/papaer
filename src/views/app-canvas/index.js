@@ -43,7 +43,7 @@ export default class AppCanvas extends Component {
         // 定义状态
         this.src = null;
         this.canvas = null;
-        this.state = { status: 'loading' };
+        this.state = { status: 'loading', scale: 1 };
         this.scaler = new Scaler();
         this.toucher = new Toucher();
         this.loader = imageLoader(this.updateView.bind(this));
@@ -93,6 +93,23 @@ export default class AppCanvas extends Component {
         return (
             <svg { ...props } />
         );
+    }
+
+    /* 渲染图形 */
+    renderGraph() {
+        let { positionList = [], problemList = [] } = this.props,
+            graph = [];
+
+        // 生成部位图形
+        positionList.forEach(({ id, coordinate }) => graph.push({
+            id,
+            type: 'path',
+            d: (
+                Array.isArray(coordinate) ?
+                'M' + coordinate.map(i => i.join(',')).join('L') + 'Z' :
+                `M${coordinate.x}, ${coordinate.y}h${coordinate.width}v${coordinate.height}h${-coordinate.width}Z`
+            )
+        }));
     }
 
     /* 更新视图 */

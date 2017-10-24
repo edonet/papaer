@@ -14,7 +14,7 @@
  */
 import React from 'react';
 import AppSwiper from './app-swiper';
-import AppCanvas from './app-canvas';
+import AppPaper from './app-paper';
 
 
 /**
@@ -22,10 +22,10 @@ import AppCanvas from './app-canvas';
  * 定义画布组件
  *****************************************
  */
-export default function App({ views = [] }) {
+export default function App({ views = [], onTap }) {
     return (
         <AppSwiper >
-            { views.map((view, idx) => <AppCanvas key={ idx } { ...view } />) }
+            { views.map((view, idx) => <AppPaper key={ idx } onTap={ onTap } { ...view } />) }
         </AppSwiper>
     );
 }
