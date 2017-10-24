@@ -324,3 +324,17 @@ export const map = (argv, handler) => {
     // 返回空数组
     return arr;
 };
+
+
+/**
+ *****************************************
+ * 加载图片
+ *****************************************
+ */
+export const imageLoader = callback => url => {
+    var img = new Image();
+
+    img.onload = () => callback(null, img);
+    img.onerror = () => callback(new Error('加载图片失败，请稍后再试。'));
+    img.src = url;
+};
