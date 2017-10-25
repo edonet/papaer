@@ -1,7 +1,7 @@
 /**
  *****************************************
  * Created by lifx
- * Created on 2017-10-22 11:10:07
+ * Created on 2017-10-24 17:19:45
  *****************************************
  */
 'use strict';
@@ -12,20 +12,18 @@
  * 加载依赖
  *****************************************
  */
-import React from 'react';
-import AppSwiper from './app-swiper';
-import AppPaper from './app-paper';
+import React, { Component } from 'react';
 
 
 /**
  *****************************************
- * 定义画布组件
+ * 定义户型图组件
  *****************************************
  */
-export default function App({ views = [], onTap }) {
-    return (
-        <AppSwiper >
-            { views.map((view, idx) => <AppPaper key={ idx } onTap={ onTap } { ...view } />) }
-        </AppSwiper>
-    );
+export default class App extends Component {
+
+    /* 渲染户型图 */
+    render() {
+        return <div>123</div>;
+    }
 }

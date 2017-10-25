@@ -11,7 +11,7 @@
  * 加载依赖
  *****************************************
  */
-import Event from '../lib/event';
+import Event from './event';
 
 
 /**
@@ -27,7 +27,7 @@ export default class Toucher extends Event {
 
         // 生成监听器
         this.disabled = false;
-        this.listener = name => event => this.disabled || this.emit(name, event);
+        this.$$listener = name => event => this.disabled || this.emit(name, event);
 
         // 添加事件监听
         this.on('touchStart', e => this.onTouchStart(e, e.touches));
@@ -55,11 +55,11 @@ export default class Toucher extends Event {
 
         // 移动手势
         if (this.touches.length === 1) {
-            return this.emit('moveStart', this.touches, e);
+            return this.emit('moveStart', e, this.touches);
         }
 
         // 缩放手势
-        this.emit('scaleStart', this.touches, e);
+        this.emit('scaleStart', e, this.touches);
     }
 
     /* 触控中事件 */
@@ -104,11 +104,23 @@ export default class Toucher extends Event {
 
         // 移动手势
         if (this.touches.length === 1) {
-            return this.emit('moving', this.touches, e);
+            return this.emit('moving', e, this.touches);
         }
 
+        let [p1, p2] = this.touches,
+            r1 = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)),
+            r2 = Math.sqrt(Math.pow(p1.ox - p2.ox, 2) + Math.pow(p1.oy - p2.oy, 2)),
+            c1 = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 },
+            c2 = { x: (p1.ox + p2.ox) / 2, y: (p1.oy + p2.oy) / 2 },
+            scale = r1 / r2,
+            matrix = {
+                scale,
+                dx: c1.x - scale * c2.x,
+                dy: c1.y - scale * c2.y
+            };
+
         // 缩放手势
-        this.emit('scaling', this.touches, e);
+        this.emit('scaling', e, this.touches, matrix);
     }
 
     /* 触控结束事件 */
@@ -123,42 +135,20 @@ export default class Toucher extends Event {
                 tap = !direction && new Date() - st < 500;
 
             // 移动手势
-            return this.emit(tap ? 'tap' : 'moveEnd', this.touches, e);
+            return this.emit(tap ? 'tap' : 'moveEnd', e, this.touches);
         }
 
         // 缩放手势
-        this.emit('scaleEnd', this.touches, e);
-    }
-
-    /* 获取缩放属性 */
-    getScale() {
-
-        // 支持缩放
-        if (this.touches.length > 1) {
-            let [p1, p2] = this.touches,
-                r1 = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)),
-                r2 = Math.sqrt(Math.pow(p1.ox - p2.ox, 2) + Math.pow(p1.oy - p2.oy, 2)),
-                c1 = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 },
-                c2 = { x: (p1.ox + p2.ox) / 2, y: (p1.oy + p2.oy) / 2 },
-                scale = r1 / r2;
-
-            return {
-                scale,
-                dx: c1.x - scale * c2.x,
-                dy: c1.y - scale * c2.y
-            };
-        }
-
-        return null;
+        this.emit('scaleEnd', e, this.touches);
     }
 
     /* 创建生成器 */
     createListener() {
         return {
-            onTouchStart: this.listener('touchStart'),
-            onTouchMove: this.listener('touchMove'),
-            onTouchEnd: this.listener('touchEnd'),
-            onTouchCancel: this.listener('touchEnd')
+            onTouchStart: this.$$listener('touchStart'),
+            onTouchMove: this.$$listener('touchMove'),
+            onTouchEnd: this.$$listener('touchEnd'),
+            onTouchCancel: this.$$listener('touchEnd')
         };
     }
 }

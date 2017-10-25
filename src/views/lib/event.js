@@ -16,7 +16,7 @@ export default class Event {
 
     /* 初始化 */
     constructor() {
-        this.events = {};
+        this.$$events = {};
     }
 
     /* 添加事件 */
@@ -39,7 +39,12 @@ export default class Event {
         }
 
         // 添加事件
-        name in this.events ? this.events[name].push(handler) : (this.events[name] = [handler]);
+        if (name in this.$$events) {
+            this.$$events[name].push(handler);
+        } else {
+            this.$$events[name] = [handler];
+        }
+
         return this;
     }
 
@@ -48,7 +53,7 @@ export default class Event {
 
         // 全部移除
         if (name === undefined) {
-            this.events = {};
+            this.$$events = {};
             return this;
         }
 
@@ -59,13 +64,13 @@ export default class Event {
 
         // 清除指定事件队列
         if (handler === undefined) {
-            delete this.events[name];
+            delete this.$$events[name];
             return this;
         }
 
         // 移除指定事件
-        if (typeof handler === 'function' && name in this.events) {
-            this.events[name] = this.events[name].filter(fun => fun !== handler);
+        if (typeof handler === 'function' && name in this.$$events) {
+            this.$$events[name] = this.$$events[name].filter(fun => fun !== handler);
         }
 
         return this;
@@ -80,13 +85,13 @@ export default class Event {
         }
 
         // 执行队列
-        if (name in this.events && this.events[name].length) {
-            this.events[name].forEach(fun => fun(...args));
+        if (name in this.$$events && this.$$events[name].length) {
+            this.$$events[name].forEach(fun => fun(...args));
         }
 
         // 执行派发事件
-        if ('$$emit' in this.events && this.events.$$emit.length) {
-            this.events.$$emit.forEach(fun => fun(name, ...args));
+        if ('$$emit' in this.$$events && this.$$events.$$emit.length) {
+            this.$$events.$$emit.forEach(fun => fun(name, ...args));
         }
 
         return this;
