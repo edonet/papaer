@@ -24,7 +24,8 @@ export * from './index';
 const
     el = document.getElementById('app'),
     data = {
-        onTap: (touches, e) => console.log(e),
+        onTap: (e) => console.log(e),
+        onChange: view => console.log(view),
         views: [
             {
                 id: 1,

@@ -31,7 +31,7 @@ module.exports = {
     },
     output: {
         path: dir('./dist'),
-        filename: '[name].min.js',
+        filename: '[name].js',
         publicPath: './',
         library: 'paper',
         libraryTarget: 'umd'

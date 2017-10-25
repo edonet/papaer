@@ -121,6 +121,21 @@ export default class Scaler extends Event {
         }
     }
 
+    /* 获取位置 */
+    coordinate(x, y) {
+        if (this.target) {
+            let rect = this.target.parentNode.getBoundingClientRect(),
+                matrix = this.matrix,
+                scale = matrix.scale * matrix.minScale;
+
+            // 获取位置
+            x = (x - rect.left - matrix.x) / scale;
+            y = (y - rect.top - matrix.y) / scale;
+        }
+
+        return { x, y };
+    }
+
     /* 停止动画 */
     stopAnimation() {
         this.animater && this.animater.stop();

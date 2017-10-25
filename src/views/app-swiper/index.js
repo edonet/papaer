@@ -24,7 +24,7 @@ import Swiper from './swiper';
  *****************************************
  */
 const
-    viewStyle = absolute();
+    viewStyle = { ...absolute(), overflow: 'hidden' };
 
 
 /**
@@ -39,8 +39,9 @@ export default class AppSwiper extends Component {
         super(props, ...args);
 
         // 初始化组件属性
+        this.curr = 0;
         this.target = null;
-        this.gesture =[];
+        this.gesture = [];
         this.swiper = new Swiper();
 
         // 绑定事件回调
@@ -67,7 +68,7 @@ export default class AppSwiper extends Component {
         // 定义元素属性
         props = {
             className,
-            style: { ...viewStyle, ...style },
+            style: { ...viewStyle, overflow: 'visible', ...style },
             ref: this.handleMount,
             ...this.touchHandler
         };
@@ -141,6 +142,11 @@ export default class AppSwiper extends Component {
             // 判断是否跨视图
             if (over) {
                 curr += touch.dx > 0 ? -1 : 1;
+            }
+
+            // 触发切换事件
+            if (this.props.onChange && this.curr !== curr) {
+                this.props.onChange(this.curr = curr);
             }
 
             // 滚动到最近视图

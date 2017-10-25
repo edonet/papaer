@@ -32,8 +32,7 @@ export default class AppPaper extends Component {
         // 定义状态
         this.url = null;
         this.state = { status: 'loading', scale: 1 };
-        this.updateScale = scale => this.setState({ scale: ((scale - 1) * .5 + 1) / scale });
-        this.onTapHandler = (...args) => this.props.onTap && this.props.onTap(...args);
+        this.updateScale = scale => this.setState({ scale });
         this.$$loader = imageLoader(this.loadImage.bind(this));
     }
 
@@ -64,8 +63,12 @@ export default class AppPaper extends Component {
                     overflow: 'hidden'
                 }
             },
-            areaStyle = { fill: 'none', stroke: 'red' },
-            pointStyle = { r: 20 * scale, stroke: 'white', strokeWidth: 20, strokeOpacity: 0 },
+            areaStyle = { fill: 'white', fillOpacity: 0, stroke: 'red', strokeWidth: 1.5 / scale },
+            pointScale = ((scale - 1) * .5 + 1) / scale,
+            pointStyle = {
+                r: 20 * pointScale, stroke: 'white',
+                strokeWidth: 20 * pointScale, strokeOpacity: 0
+            },
             graph = [];
 
 
@@ -121,7 +124,7 @@ export default class AppPaper extends Component {
 
         // 返回元素
         return (
-            <AppScaler {...this.size } onScale={ this.updateScale } onTap={ this.onTapHandler }>
+            <AppScaler {...this.size } onScale={ this.updateScale } onTap={ this.props.onTap }>
                 <AppFigure { ...this.size } { ...props } graph={ graph } />
             </AppScaler>
         );

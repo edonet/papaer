@@ -37,7 +37,7 @@ export default class AppScaler extends Component {
         this.toucher.on('moving', this.onMoveViewHandler.bind(this));
         this.toucher.on('scaling', this.onScaleViewHandler.bind(this));
         this.toucher.on('touchEnd', this.onTouchEndHandler.bind(this));
-        this.toucher.on('tap', (...args) => this.props.onTap && this.props.onTap(...args));
+        this.toucher.on('tap', this.onTapHandler.bind(this));
 
         // 添加更新回调
         this.scaler.on('update', matrix => {
@@ -72,7 +72,7 @@ export default class AppScaler extends Component {
     }
 
     /* 移动视图 */
-    onMoveViewHandler([touch], event) { console.log(1);
+    onMoveViewHandler([touch], event) {
 
         // 判断是否超出边界
         if (this.stopPropagation === null) {
@@ -100,6 +100,14 @@ export default class AppScaler extends Component {
         if (touch && touch.scale) {
             this.scaler.translateBy(touch.dx, touch.dy, touch.scale);
             event.stopPropagation();
+        }
+    }
+
+    /* 点击回调 */
+    onTapHandler(touches, event) {
+        if (this.props.onTap && touches.length) {
+            let { sx, sy } = touches[0];
+            this.props.onTap([this.scaler.coordinate(sx, sy)], event);
         }
     }
 }
