@@ -144,6 +144,9 @@ export default class AppSwiper extends Component {
                 curr += touch.dx > 0 ? -1 : 1;
             }
 
+            // 限定边界
+            curr = Math.max(0, Math.min(curr, this.swiper.getSize() - 1));
+
             // 触发切换事件
             if (this.props.onChange && this.curr !== curr) {
                 this.props.onChange(this.curr = curr);

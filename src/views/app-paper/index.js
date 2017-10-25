@@ -66,8 +66,8 @@ export default class AppPaper extends Component {
             areaStyle = { fill: 'white', fillOpacity: 0, stroke: 'red', strokeWidth: 1.5 / scale },
             pointScale = ((scale - 1) * .5 + 1) / scale,
             pointStyle = {
-                r: 20 * pointScale, stroke: 'white',
-                strokeWidth: 20 * pointScale, strokeOpacity: 0
+                r: 10 * pointScale, stroke: 'white',
+                strokeWidth: 10 * pointScale, strokeOpacity: 0
             },
             graph = [];
 
@@ -77,15 +77,17 @@ export default class AppPaper extends Component {
             let { width, height } = this.size,
                 d = `M0, 0v${height}h${width}v${- height}Z` + positionList.map(({ coordinate }) => {
 
-                    // 添加矩形
-                    if ('x' in coordinate) {
-                        let { x, y, width, height } = coordinate;
-                        return `M${x}, ${y}h${width}v${height}h${- width}Z`;
+                    // 校验坐标是否为对象
+                    if (!coordinate || typeof coordinate !== 'object') {
+                        return '';
                     }
 
                     // 添加多边形
                     if (Array.isArray(coordinate)) {
                         return 'M' + coordinate.map(p => p.join(', ')).join('L') + 'Z';
+                    } else if ('x' in coordinate) {
+                        let { x, y, width, height } = coordinate;
+                        return `M${x}, ${y}h${width}v${height}h${- width}Z`;
                     }
 
                     return '';
@@ -101,11 +103,9 @@ export default class AppPaper extends Component {
         // 添加部位区域
         positionList.forEach(({ id, coordinate }) => {
 
-            // 添加矩形
-            if ('x' in coordinate) {
-                return graph.push({
-                    id, type: 'rect', ...areaStyle, ...coordinate
-                });
+            // 校验坐标是否为对象
+            if (!coordinate || typeof coordinate !== 'object') {
+                return '';
             }
 
             // 添加多边形
@@ -113,6 +113,10 @@ export default class AppPaper extends Component {
                 return graph.push({
                     id, type: 'path', ...areaStyle,
                     d: 'M' + coordinate.map(p => p.join(', ')).join('L') + 'Z'
+                });
+            } else if ('x' in coordinate) {
+                return graph.push({
+                    id, type: 'rect', ...areaStyle, ...coordinate
                 });
             }
         });

@@ -66,10 +66,19 @@ export default class Scaler extends Event {
 
     /* 更新元素样式 */
     updateView({ x, y, scale } = this.matrix) {
+        if (this.target) {
 
-        this.target && assign(this.target.style, transform(
-            `translate(${x}px, ${y}px)${hasPerspective ? ' translateZ(0)' : ''} scale(${scale * this.matrix.minScale})`
-        )) && this.emit('update', this.matrix);
+            // 更新样式
+            assign(this.target.style, {
+                display: 'block',
+                ...transform(
+                    `translate(${x}px, ${y}px)${hasPerspective ? ' translateZ(0)' : ''} scale(${scale * this.matrix.minScale})`
+                )
+            });
+
+            // 执行更新回调
+            this.emit('update', this.matrix);
+        }
     }
 
     /* 位置到指定位置 */
@@ -98,13 +107,13 @@ export default class Scaler extends Event {
     }
 
     /* 超出边界恢复 */
-    reset(duration = 250, easeType = 'ease-out') {
+    reset({ cx = 0, cy = 0 } = {}, duration = 250, easeType = 'ease-out') {
         let { x, y, scale, minScale, maxScale } = this.matrix,
-            newScale = scale < 1 ? 1 : scale > maxScale ? maxScale : scale,
-            minX = Math.min(0, this.view.width - newScale * this.view.width),
-            minY = Math.min(0, this.view.height - newScale * minScale * this.size.height),
-            dx = x > 0 ? -x : x < minX ? minX - x : 0,
-            dy = y > 0 ? -y : y < minY ? minY - y : 0,
+            newScale = Math.max(1, Math.min(maxScale, scale)),
+            width = newScale * this.view.width,
+            height = newScale * minScale * this.size.height,
+            dx = Math.min(0, Math.max(this.view.width - width, (x - cx) * newScale / scale + cx)) - x,
+            dy = Math.min(0, Math.max(this.view.height - height, (y - cy) * newScale / scale + cy)) - y,
             ds = newScale - scale,
             easeFun = ease(easeType);
 

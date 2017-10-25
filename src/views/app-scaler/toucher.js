@@ -120,14 +120,16 @@ export default class Toucher extends Event {
         // 移动手势
         if (touches.length === 0) {
             let { st, direction } = this.touches[0],
-                tap = !direction && new Date() - st < 500;
+                tap = !this.disableTap && !direction && new Date() - st < 500;
 
             // 移动手势
+            this.disableTap = false;
             return this.emit(tap ? 'tap' : 'moveEnd', this.touches, e);
         }
 
         // 缩放手势
         this.emit('scaleEnd', this.touches, e);
+        this.disableTap = true;
     }
 
     /* 获取缩放属性 */

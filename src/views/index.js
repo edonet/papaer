@@ -26,8 +26,8 @@ export default function App({ views = [], onTap, onChange }) {
     let onTapCallback = (touches, e) => {
             if (onTap) {
                 let el = e.target,
-                    id = el.getAttribute('id'),
                     name = e.target.tagName,
+                    id = '',
                     type = '';
 
                 // 过滤蒙层
@@ -35,10 +35,13 @@ export default function App({ views = [], onTap, onChange }) {
                     return;
                 }
 
+                // 获取数据类型
                 if (name === 'circle') {
                     type = 'point';
+                    id = el.getAttribute('id');
                 } else if (name === 'path' || name === 'rect') {
                     type = 'area';
+                    id = el.getAttribute('id');
                 }
 
                 // 执行点击回调

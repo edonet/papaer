@@ -63,7 +63,7 @@ export default class Swiper {
         if (target) {
 
             // 判断是否超出边界
-            position = Math.max(0, Math.min(max, position || value || 0));
+            position = Math.max(0 - 30, Math.min(max + 30, position || value || 0));
 
             // 判断是否需要更新
             if (position !== value) {
@@ -130,6 +130,11 @@ export default class Swiper {
     /* 获取位置 */
     getPosition() {
         return this.$$model.value;
+    }
+
+    /* 获取数量 */
+    getSize() {
+        return this.$$model.views.length;
     }
 
     /* 销毁控件 */

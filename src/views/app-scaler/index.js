@@ -54,7 +54,7 @@ export default class AppScaler extends Component {
                 style: {
                     width,
                     height,
-                    display: 'block',
+                    display: 'none',
                     position: 'absolute',
                     top: 0,
                     left: 0,
@@ -88,8 +88,22 @@ export default class AppScaler extends Component {
 
     /* 移动视图结束 */
     onTouchEndHandler() {
+        let center = { cx: 0, cy: 0 },
+            touches = this.toucher.touches;
+
+        // 获取变换中心点
+        if (touches.length > 1) {
+            let [p1, p2] = touches;
+
+            center = {
+                cx: (p1.x + p2.x) / 2,
+                cy: (p1.y + p2.y) / 2
+            };
+        }
+
+        // 更新视图
         this.stopPropagation = null;
-        this.scaler.reset();
+        this.scaler.reset(center);
     }
 
     /* 缩放视图 */
