@@ -41,7 +41,7 @@ export default class AppScaler extends Component {
 
         // 添加更新回调
         this.scaler.on('update', matrix => {
-            this.props.onScale && this.props.onScale(matrix.scale);
+            this.props.onScale && this.props.onScale({ ...matrix });
         });
     }
 

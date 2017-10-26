@@ -22,7 +22,7 @@ import AppPaper from './app-paper';
  * 定义画布组件
  *****************************************
  */
-export default function App({ views = [], onTap, onChange }) {
+export default function App({ views = [], onTap, onChange, mark }) {
     let onTapCallback = (touches, e) => {
             if (onTap) {
                 let el = e.target,
@@ -52,7 +52,11 @@ export default function App({ views = [], onTap, onChange }) {
 
     return (
         <AppSwiper onChange={ onChange } >
-            { views.map((view, idx) => <AppPaper key={ idx } onTap={ onTapCallback } { ...view } />) }
+            {
+                views.map((view, idx) => (
+                    <AppPaper key={ idx } onTap={ onTapCallback } mark={ mark } { ...view } />
+                ))
+            }
         </AppSwiper>
     );
 }

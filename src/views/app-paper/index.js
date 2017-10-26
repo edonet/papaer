@@ -31,8 +31,8 @@ export default class AppPaper extends Component {
 
         // 定义状态
         this.url = null;
-        this.state = { status: 'loading', scale: 1 };
-        this.updateScale = scale => this.setState({ scale });
+        this.state = { status: 'loading', matrix: { scale: 1, minScale: 1 } };
+        this.updateScale = matrix => this.setState({ matrix });
         this.$$loader = imageLoader(this.loadImage.bind(this));
     }
 
@@ -55,7 +55,7 @@ export default class AppPaper extends Component {
     /* 渲染图形 */
     renderFigure() {
         let { id, positionList = [], problemList = [], mark = false } = this.props,
-            scale = this.state.scale,
+            { scale, minScale } = this.state.matrix,
             props = {
                 id,
                 style: {
@@ -64,10 +64,10 @@ export default class AppPaper extends Component {
                 }
             },
             areaStyle = { fill: 'white', fillOpacity: 0, stroke: 'red', strokeWidth: 1.5 / scale },
-            pointScale = ((scale - 1) * .5 + 1) / scale,
+            pointScale = (1 - (Math.min(scale, 4) - 1) * .2) / minScale,
             pointStyle = {
-                r: 10 * pointScale, stroke: 'white',
-                strokeWidth: 10 * pointScale, strokeOpacity: 0
+                r: 8 * pointScale, stroke: 'white',
+                strokeWidth: 8 * pointScale, strokeOpacity: 0
             },
             graph = [];
 
