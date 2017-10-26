@@ -15,6 +15,7 @@
 import React from 'react';
 import AppSwiper from './app-swiper';
 import AppPaper from './app-paper';
+import localStore from './lib/localStore';
 
 
 /**
@@ -22,7 +23,7 @@ import AppPaper from './app-paper';
  * 定义画布组件
  *****************************************
  */
-export default function App({ views = [], onTap, onChange, mark }) {
+export default function App({ id, views = [], onTap, onChange, mark }) {
     let onTapCallback = (touches, e) => {
             if (onTap) {
                 let el = e.target,
@@ -47,14 +48,14 @@ export default function App({ views = [], onTap, onChange, mark }) {
                 // 执行点击回调
                 onTap({ id, type, x: touches[0].x, y: touches[0].y });
             }
-        };
-
+        },
+        store = localStore(id);
 
     return (
-        <AppSwiper onChange={ onChange } >
+        <AppSwiper onChange={ onChange } store={ store } >
             {
                 views.map((view, idx) => (
-                    <AppPaper key={ idx } onTap={ onTapCallback } mark={ mark } { ...view } />
+                    <AppPaper key={ idx } onTap={ onTapCallback } mark={ mark } store={ store } { ...view } />
                 ))
             }
         </AppSwiper>

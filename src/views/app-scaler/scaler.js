@@ -24,14 +24,14 @@ import Event from '../lib/event';
 export default class Scaler extends Event {
 
     // 初始化控件
-    constructor() {
+    constructor(matrix) {
         super();
 
         // 初始化属性
         this.target = null;
         this.view = {};
         this.size = {};
-        this.matrix = { x: 0, y: 0, scale: 1 };
+        this.matrix = { x: 0, y: 0, scale: 1, ...matrix };
         this.animater = null;
         this.$$updater = viewUpdater();
 

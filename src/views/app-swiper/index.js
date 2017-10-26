@@ -103,7 +103,8 @@ export default class AppSwiper extends Component {
         this.swiper.updateView({
             target: el,
             views: el.childNodes,
-            overlap: this.props.overlap || 0
+            overlap: this.props.overlap || 0,
+            value: (this.props.store.get('curr') || 0) * 100
         });
     }
 
@@ -151,6 +152,9 @@ export default class AppSwiper extends Component {
             if (this.props.onChange && this.curr !== curr) {
                 this.props.onChange(this.curr = curr);
             }
+
+            // 暂存状态
+            this.props.store.set({ curr });
 
             // 滚动到最近视图
             this.swiper.animateTo(curr * 100, 250, 'ease-out');

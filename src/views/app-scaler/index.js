@@ -30,7 +30,7 @@ export default class AppScaler extends Component {
         super(props, ...args);
 
         // 初始化属性
-        this.scaler = new Scaler();
+        this.scaler = new Scaler(props.store.get('v' + props.id));
         this.toucher = new Toucher();
 
         // 添加手势事件
@@ -41,6 +41,7 @@ export default class AppScaler extends Component {
 
         // 添加更新回调
         this.scaler.on('update', matrix => {
+            this.props.store.set({ ['v' + props.id]: matrix });
             this.props.onScale && this.props.onScale({ ...matrix });
         });
     }

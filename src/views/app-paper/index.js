@@ -63,7 +63,10 @@ export default class AppPaper extends Component {
                     overflow: 'hidden'
                 }
             },
-            areaStyle = { fill: 'white', fillOpacity: 0, stroke: 'red', strokeWidth: 1.5 / scale },
+            areaStyle = {
+                fill: 'white', fillOpacity: 0, stroke: 'red',
+                strokeWidth: Math.max(1, .8 / (scale * minScale))
+            },
             pointScale = (1 - (Math.min(scale, 4) - 1) * .2) / minScale,
             pointStyle = {
                 r: 8 * pointScale, stroke: 'white',
@@ -128,7 +131,12 @@ export default class AppPaper extends Component {
 
         // 返回元素
         return (
-            <AppScaler {...this.size } onScale={ this.updateScale } onTap={ this.props.onTap }>
+            <AppScaler
+                { ...this.size }
+                onScale={ this.updateScale }
+                id={ this.props.id }
+                store={ this.props.store }
+                onTap={ this.props.onTap }>
                 <AppFigure { ...this.size } { ...props } graph={ graph } />
             </AppScaler>
         );
