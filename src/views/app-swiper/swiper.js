@@ -51,7 +51,7 @@ export default class Swiper {
 
         // 获取滚动的最大值
         this.$$model.max = this.$$model.views ? ((this.$$model.views.length || 1) - 1) * 100 : 0;
-console.log(options.value);
+
         // 刷新视图
         this.$$model.target && this.refresh(value);
     }

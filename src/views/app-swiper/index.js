@@ -106,6 +106,16 @@ export default class AppSwiper extends Component {
             overlap: this.props.overlap || 0,
             value: (this.props.store.get('curr') || 0) * 100
         });
+
+        // 更新位置事件
+        if (this.props.onChange) {
+            setTimeout(() => {
+                let position = this.swiper.getPosition(),
+                    curr = parseInt(position / 100);
+
+                this.props.onChange(this.curr = curr);
+            }, 100);
+        }
     }
 
     /* 监听事件函数 */
