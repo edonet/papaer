@@ -76,14 +76,26 @@ export default class AppSwiper extends Component {
         // 渲染元素
         return (
             <div { ...props } >
-                { Children.map(children, view => <div style={ viewStyle }>{ view }</div>) }
+                { Children.map(children, (view, idx) => <div key={ idx } style={ viewStyle }>{ view }</div>) }
             </div>
         );
     }
 
     /* 更新组件 */
     componentDidUpdate() {
-        this.swiper.updateView();
+        this.swiper.updateView({
+            value: (this.props.store.get('curr') || 0) * 100
+        });
+
+        // 更新位置事件
+        if (this.props.onChange) {
+            setTimeout(() => {
+                let position = this.swiper.getPosition(),
+                    curr = parseInt(position / 100);
+
+                this.props.onChange(this.curr = curr);
+            }, 100);
+        }
     }
 
     /* 监听元素加载 */

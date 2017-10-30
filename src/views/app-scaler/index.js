@@ -33,6 +33,13 @@ export default class AppScaler extends Component {
         this.scaler = new Scaler(props.store.get('v' + props.id));
         this.toucher = new Toucher();
 
+        // 更新方法
+        this.$$updater = el => this.scaler.update(el, {
+            width: this.props.width,
+            height: this.props.height,
+            matrix: this.props.store.get('v' + this.props.id)
+        });
+
         // 添加手势事件
         this.toucher.on('moving', this.onMoveViewHandler.bind(this));
         this.toucher.on('scaling', this.onScaleViewHandler.bind(this));
@@ -51,7 +58,7 @@ export default class AppScaler extends Component {
         let { width, height } = this.props,
             props = {
                 ...this.toucher.createListener(),
-                ref: el => this.scaler.update(el, { width, height }),
+                ref: this.$$updater,
                 style: {
                     width,
                     height,

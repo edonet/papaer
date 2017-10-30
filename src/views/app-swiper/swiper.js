@@ -53,11 +53,11 @@ export default class Swiper {
         this.$$model.max = this.$$model.views ? ((this.$$model.views.length || 1) - 1) * 100 : 0;
 
         // 刷新视图
-        this.$$model.target && this.refresh(value);
+        this.$$model.target && this.refresh(value, true);
     }
 
     /* 更新视图 */
-    refresh(position) {
+    refresh(position, flag) {
         let { target, max, value } = this.$$model;
 
         if (target) {
@@ -66,7 +66,7 @@ export default class Swiper {
             position = Math.max(0 - 30, Math.min(max + 30, position || value || 0));
 
             // 判断是否需要更新
-            if (position !== value) {
+            if (flag || position !== value) {
                 this.$$updater(this.refreshView.bind(this, position));
             }
         }

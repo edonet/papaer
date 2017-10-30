@@ -40,7 +40,7 @@ export default class Scaler extends Event {
     }
 
     /* 更新元素 */
-    update(target, { width, height }) {
+    update(target, { width, height, matrix = null }) {
 
         // 更新元素
         this.target = target;
@@ -56,12 +56,16 @@ export default class Scaler extends Event {
             this.view.height = view.clientHeight || this.size.height;
 
             // 更新缩放边界
-            this.matrix.minScale = this.view.width / this.size.width;
-            this.matrix.maxScale = Math.max(this.size.width / this.view.width, 3);
-        }
+            this.matrix = {
+                ...this.matrix,
+                ...matrix,
+                minScale: this.view.width / this.size.width,
+                maxScale: Math.max(this.size.width / this.view.width, 3)
+            };
 
-        // 更新视图
-        this.$$updater(this.updateView);
+            // 更新视图
+            this.$$updater(this.updateView);
+        }
     }
 
     /* 更新元素样式 */
