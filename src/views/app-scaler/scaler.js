@@ -47,7 +47,8 @@ export default class Scaler extends Event {
 
         // 更新属性
         if (target && target.nodeType === 1) {
-            let view = target.parentNode || {};
+            let view = target.parentNode || {},
+                minScale;
 
             // 更新尺寸
             this.size.width = width || target.clientWidth;
@@ -55,16 +56,19 @@ export default class Scaler extends Event {
             this.view.width = view.clientWidth || this.size.width;
             this.view.height = view.clientHeight || this.size.height;
 
+            // 获取最小缩放
+            minScale = Math.min(this.view.width / this.size.width, this.view.height / this.size.height);
+
             // 更新缩放边界
             this.matrix = {
                 ...this.matrix,
                 ...matrix,
-                minScale: this.view.width / this.size.width,
-                maxScale: Math.max(this.size.width / this.view.width, 3)
+                minScale,
+                maxScale: Math.max(1 / minScale, 3)
             };
 
             // 更新视图
-            this.$$updater(this.updateView);
+            this.reset({ z: true });
         }
     }
 
@@ -102,8 +106,8 @@ export default class Scaler extends Event {
 
     /* 获取超出的边界 */
     overflow(dx) {
-        let { x, scale } = this.matrix,
-            minX = Math.min(0, this.view.width - scale * this.view.width),
+        let { x, scale, minScale } = this.matrix,
+            minX = Math.min(0, this.view.width - scale * minScale * this.size.width),
             newX = x + dx;
 
         // 返回是否溢出
@@ -111,19 +115,28 @@ export default class Scaler extends Event {
     }
 
     /* 超出边界恢复 */
-    reset({ cx = 0, cy = 0 } = {}, duration = 250, easeType = 'ease-out') {
+    reset({ cx = 0, cy = 0, z = false } = {}, duration = 250, easeType = 'ease-out') {
         let { x, y, scale, minScale, maxScale } = this.matrix,
             newScale = Math.max(1, Math.min(maxScale, scale)),
-            width = newScale * this.view.width,
+            width = newScale * minScale * this.size.width,
             height = newScale * minScale * this.size.height,
-            dx = Math.min(0, Math.max(this.view.width - width, (x - cx) * newScale / scale + cx)) - x,
-            dy = Math.min(0, Math.max(this.view.height - height, (y - cy) * newScale / scale + cy)) - y,
+            dx = (x - cx) * newScale / scale + cx,
+            dy = (y - cy) * newScale / scale + cy,
             ds = newScale - scale,
             easeFun = ease(easeType);
 
+        // 获取【x】轴边界
+        if (width < this.view.width) {
+            dx = (this.view.width - width) / 2 - x;
+        } else {
+            dx = Math.min(0, Math.max(this.view.width - width, dx)) - x;
+        }
+
+        // 获取【y】轴边界
+        dy = Math.min(0, Math.max(this.view.height - height, dy)) - y;
 
         // 判断是否需要恢复
-        if (dx || dy || ds) {
+        if (z || dx || dy || ds) {
             this.animater = animate(duration, progress => {
                 progress = easeFun(progress);
                 this.matrix.x = x + dx * progress;

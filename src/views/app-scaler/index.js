@@ -30,8 +30,9 @@ export default class AppScaler extends Component {
         super(props, ...args);
 
         // 初始化属性
-        this.scaler = new Scaler(props.store.get('v' + props.id));
+        this.stopPropagation = null;
         this.toucher = new Toucher();
+        this.scaler = new Scaler(props.store.get('v' + props.id));
 
         // 更新方法
         this.$$updater = el => this.scaler.update(el, {
@@ -83,12 +84,12 @@ export default class AppScaler extends Component {
     onMoveViewHandler([touch], event) {
 
         // 判断是否超出边界
-        if (this.stopPropagation === null) {
+        if (this.stopPropagation === null && touch.direction === 'x') {
             this.stopPropagation = this.scaler.overflow(touch.dx);
         }
 
         // 移动视图
-        if (this.stopPropagation === false) {
+        if (this.stopPropagation !== true) {
             touch && this.scaler.translateBy(touch.dx, touch.dy);
             return event.stopPropagation();
         }

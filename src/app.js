@@ -31,7 +31,7 @@ const
             {
                 id: 1,
                 mark: true,
-                path: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1508406925923&di=efefef81aacec810dcb978ecaf372c4c&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimage%2Fc0%253Dshijue1%252C0%252C0%252C294%252C40%2Fsign%3D178dcd40db09b3deffb2ec2ba4d606f4%2F9d82d158ccbf6c81c1c946c0b63eb13533fa401f.jpg',
+                path: '1.jpeg',
                 positionList: [
                     {
                         id: '1',

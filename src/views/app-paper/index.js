@@ -67,13 +67,14 @@ export default class AppPaper extends Component {
                 fill: 'white', fillOpacity: 0, stroke: 'red',
                 strokeWidth: Math.max(1, .8 / (scale * minScale))
             },
-            pointScale = (1 - (Math.min(scale, 4) - 1) * .2) / minScale,
+            pointScale = (1 - (Math.min(3, Math.max(1, scale)) - 1) * .3) / minScale,
             pointStyle = {
-                r: 8 * pointScale, stroke: 'white',
+                r: 6 * pointScale, stroke: 'white',
                 strokeWidth: 8 * pointScale, strokeOpacity: 0
             },
             graph = [];
 
+            console.log(pointScale, scale, minScale);
 
         // 启用蒙层
         if (mark) {
