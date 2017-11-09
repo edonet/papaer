@@ -42,9 +42,9 @@ export default class AppScaler extends Component {
         });
 
         // 添加手势事件
-        this.toucher.on('moving', this.onMoveViewHandler.bind(this));
-        this.toucher.on('scaling', this.onScaleViewHandler.bind(this));
-        this.toucher.on('touchEnd', this.onTouchEndHandler.bind(this));
+        // this.toucher.on('moving', this.onMoveViewHandler.bind(this));
+        // this.toucher.on('scaling', this.onScaleViewHandler.bind(this));
+        // this.toucher.on('touchEnd', this.onTouchEndHandler.bind(this));
         this.toucher.on('tap', this.onTapHandler.bind(this));
 
         // 添加更新回调
@@ -121,6 +121,7 @@ export default class AppScaler extends Component {
 
         // 判断是否能缩放
         if (touch && touch.scale) {
+            console.log(touch);
             this.scaler.translateBy(touch.dx, touch.dy, touch.scale);
             event.stopPropagation();
         }

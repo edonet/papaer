@@ -31,8 +31,8 @@ export default class AppPaper extends Component {
 
         // 定义状态
         this.url = null;
-        this.state = { status: 'loading', matrix: { scale: 1, minScale: 1 } };
-        this.updateScale = matrix => this.setState({ matrix });
+        this.state = { status: 'loading', matrix: { scale: 3, minScale: .5 } };
+        // this.updateScale = matrix => this.setState({ matrix });
         this.$$loader = imageLoader(this.loadImage.bind(this));
     }
 

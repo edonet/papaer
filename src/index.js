@@ -1,7 +1,7 @@
 /**
  *****************************************
  * Created by lifx
- * Created on 2017-10-21 11:06:09
+ * Created on 2017-11-08 14:24:35
  *****************************************
  */
 'use strict';
@@ -12,30 +12,30 @@
  * 加载依赖
  *****************************************
  */
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './views';
+import element from './lib/element';
+import localStore from './lib/localStore';
+import Swiper, { unmount as unmountSwiper } from './swiper';
+import Canvas from './canvas';
+import format from './format';
 
 
 /**
  *****************************************
- * 抛出接口
+ * 渲染组件
  *****************************************
  */
-export const render = (el, data) => {
+export const render = (el, { id, views = [] } = {}) => {
+    let store = localStore(id),
+        swiper = new Swiper({ store });
 
-    // 获取元素
-    if (typeof el === 'string') {
-        el = document.getElementById(el);
-    }
 
-    // 判断节点类型
-    if (!el || el.nodeType !== 1) {
-        throw new Error('获取节点失败，无法加载画布');
-    }
+    // 添加视图
+    views.forEach(view => swiper.append(
+        new Canvas({ id: view.id, url: view.path, store, data: format(view) })
+    ));
 
-    // 渲染元素
-    ReactDOM.render(<App { ...data } />, el);
+    // 加载组件
+    element(el).map(el => swiper.mount(unmountSwiper(el)));
 };
 
 
@@ -44,6 +44,7 @@ export const render = (el, data) => {
  * 卸载组件
  *****************************************
  */
-export const unmount = el => ReactDOM.unmountComponentAtNode(
-    typeof el === 'string' ? document.getElementById(el) : el
+export const unmount = (
+    id => element(id).map(unmountSwiper)
 );
+
