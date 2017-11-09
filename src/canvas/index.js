@@ -190,6 +190,18 @@ export default class Canvas extends EventEmitter {
             }
         });
 
+        // 监听点击事件
+        this.on('app:tap', data => {
+            console.log(data.sx);
+            let rect = this.$$container.getBoundingClientRect(),
+                { x, y, scale } = this.state;
+
+            // 获取位置
+            scale *= this.size.scale;
+            data.sx = (data.sx - rect.left - x) / scale;
+            data.sy = (data.sy - rect.top - y) / scale;
+        });
+
         // 监听触控结束
         this.on('app:touchEnd', () => {
             this.reset();

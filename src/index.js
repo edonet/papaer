@@ -24,9 +24,40 @@ import format from './format';
  * 渲染组件
  *****************************************
  */
-export const render = (el, { id, views = [] } = {}) => {
+export const render = (el, { id, views = [], onTap, onChange } = {}) => {
     let store = localStore(id),
         swiper = new Swiper({ store });
+
+
+    // 添加切换事件
+    swiper.on('change', onChange);
+
+    // 添加点击事件
+    swiper.on('tap', (e = {}, [touch]) => {
+        if (touch && touch.sx) {
+            let target = e.target || {},
+                name = target.tagName,
+                id = '',
+                type = '';
+
+            // 过滤蒙层
+            if (el.getAttribute('fill-rule') === 'evenodd') {
+                return;
+            }
+
+            // 获取数据类型
+            if (name === 'circle') {
+                type = 'point';
+                id = el.getAttribute('id');
+            } else if (name === 'path' || name === 'rect') {
+                type = 'area';
+                id = el.getAttribute('id');
+            }
+
+            // 执行点击回调
+            onTap && onTap({ id, type, x: touch.sx, y: touch.sy });
+        }
+    });
 
 
     // 添加视图

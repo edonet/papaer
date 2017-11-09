@@ -66,9 +66,7 @@ async function start() {
             appendFile(
                 dir('../dist/paper.min.js'),
                 dir('../public/polyfill.js'),
-                dir('../public/react.min.js'),
-                dir('../public/react-dom.min.js'),
-                dir('../dist/paper.js'),
+                dir('../dist/paper.js')
             );
         });
     });

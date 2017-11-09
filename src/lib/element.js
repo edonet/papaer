@@ -178,7 +178,7 @@ const
  * 变换属性
  *****************************************
  */
-export const transform = ({ x = 0, y = 0, scale = 1 }) => ({
-    [prefixTransform]: `translate(${ px(x) }, ${ px(y) })${ translateZ } scale(${ scale })`
+export const transform = ({ x = 0, y = 0 }) => ({
+    [prefixTransform]: `translate(${ px(x) }, ${ px(y) })${ translateZ }`
 });
 

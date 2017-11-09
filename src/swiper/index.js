@@ -97,6 +97,17 @@ export default class Swiper extends EventEmitter {
             this.emit('app:scaling', { touches }, this.$$curr);
         });
 
+        // 监听点击事件
+        this.$$toucher.on('tap', (e, [touch]) => {
+            if (touch) {
+                let { sx, sy } = touch,
+                    data = { sx, sy };
+
+                this.emit('app:tap', data, this.$$curr);
+                this.emit('tap', e, [data]);
+            }
+        });
+
         // 监听手势滚动结束
         this.$$toucher.on('touchEnd', (e, [touch]) => {
 
@@ -124,7 +135,7 @@ export default class Swiper extends EventEmitter {
                     if (progress >= 1 && curr !== this.$$curr) {
                         store.set({ view: curr });
                         this.$$curr = curr;
-                        this.emit('swiper:change', this.$$curr);
+                        this.emit('change', this.$$curr);
                     }
                 });
             }
@@ -146,6 +157,7 @@ export default class Swiper extends EventEmitter {
         // 获取当前位置
         this.$$curr = Math.max(0, Math.min(this.$$views.length - 1, this.$$curr));
         this.translateTo(- this.$$curr * 100);
+        this.emit('change', this.$$curr);
 
         // 挂载元素
         target.setAttribute(attrName, this.$$id);
