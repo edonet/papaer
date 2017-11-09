@@ -45,6 +45,7 @@ async function start() {
     // 移除目标路径
     cp.exec(`rm -rf ${config.output.path}/*`);
     cp.exec(`cp ${config.context}/test.html ${config.output.path}/test.html`);
+    cp.exec(`cp ${config.context}/1.jpeg ${config.output.path}/1.jpeg`);
 
 
     // 启动【App】打包
