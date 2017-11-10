@@ -12,7 +12,7 @@
  * 申请一下帧
  *****************************************
  */
-export const rAF = (
+export const rAF = window.rAF = (
     window.requestAnimationFrame ||
     window.windowebkitRequestAnimationFrame ||
     window.mozRequestAnimationFrame ||

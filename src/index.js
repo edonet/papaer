@@ -41,17 +41,17 @@ export const render = (el, { id, views = [], onTap, onChange } = {}) => {
                 type = '';
 
             // 过滤蒙层
-            if (el.getAttribute('fill-rule') === 'evenodd') {
+            if (target.getAttribute('fill-rule') === 'evenodd') {
                 return;
             }
 
             // 获取数据类型
             if (name === 'circle') {
                 type = 'point';
-                id = el.getAttribute('id');
+                id = target.getAttribute('id');
             } else if (name === 'path' || name === 'rect') {
                 type = 'area';
-                id = el.getAttribute('id');
+                id = target.getAttribute('id');
             }
 
             // 执行点击回调
@@ -67,6 +67,9 @@ export const render = (el, { id, views = [], onTap, onChange } = {}) => {
 
     // 加载组件
     element(el).map(el => swiper.mount(unmountSwiper(el)));
+
+    // 返回插件
+    return swiper;
 };
 
 
