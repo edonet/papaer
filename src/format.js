@@ -99,7 +99,7 @@ export default ({ mark, positionList, problemList }) => {
             'y': '0',
             'width': '100%',
             'height': '100%',
-            'preserveAspectRatio': 'xMidYMin meet',
+            'preserveAspectRatio': 'xMidYMin slice',
             'xml:space': 'preserve',
             'style': {
                 'display': 'block',
