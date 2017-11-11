@@ -24,9 +24,9 @@ import format from './format';
  * 渲染组件
  *****************************************
  */
-export const render = (el, { id, views = [], onTap, onChange } = {}) => {
+export const render = (el, { id, curr, views = [], onTap, onChange } = {}) => {
     let store = localStore(id),
-        swiper = new Swiper({ store });
+        swiper = new Swiper({ store, curr });
 
 
     // 添加切换事件

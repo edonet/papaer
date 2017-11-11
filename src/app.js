@@ -26,6 +26,7 @@ const
     el = document.getElementById('app'),
     options = {
         ...data,
+        curr: 2,
         onTap: (e) => console.log(e),
         onChange: view => console.log(view),
         views: [...data.views, ...data.views, {

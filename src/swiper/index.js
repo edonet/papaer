@@ -38,13 +38,13 @@ const
 export default class Swiper extends EventEmitter {
 
     /* 初始化组件 */
-    constructor({ store } = {}) {
+    constructor({ store, curr = store.get('view') } = {}) {
         super();
 
         // 定义属性
         this.$$id = uuid();
         this.$$x = null;
-        this.$$curr = store.get('view') || 0;
+        this.$$curr = curr || 0;
         this.$$views = [];
         this.$$size = { width: 0, height: 0 };
         this.$$toucher = new Toucher();
