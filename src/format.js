@@ -16,10 +16,10 @@ export default ({ mark, positionList, problemList }) => {
     let children = [],
         areaStyle = {
             fill: 'white', 'fill-opacity': 0, stroke: 'red',
-            style: { strokeWidth: '1em' }
+            style: { strokeWidth: '.1em' }
         },
         pointStyle = {
-            style: { r: '6em', strokeWidth: '8em' }, strokeOpacity: 0
+            style: { r: '.8em', strokeWidth: '1em' }, strokeOpacity: 0
         };
 
 

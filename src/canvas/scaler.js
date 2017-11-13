@@ -15,7 +15,7 @@
 export default (view, size) => ({x, y, scale}) => {
     let viewScale = scale * size.scale,
         viewWidth = view.width / viewScale,
-        fontSize = (Math.min(3, Math.max(1, scale) - 1) * .4 + 1) * 1 / viewScale,
+        fontSize = 10 * (Math.min(3, Math.max(1, scale) - 1) * .4 + 1) * 1 / viewScale,
         width = size.width * viewScale,
         height = width * size.ratio;
 
