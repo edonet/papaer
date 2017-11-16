@@ -44,7 +44,6 @@ async function start() {
 
     // 获取服务器地址
     devUrl = `http${ https ? 's' : '' }://${ host || ip() }:${ port }`;
-    config.output.filename = '[name].js';
     config.output.publicPath = devUrl + '/';
 
     // 配置打包入口

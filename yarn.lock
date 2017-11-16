@@ -1827,6 +1827,10 @@ fstream@^1.0.0, fstream@^1.0.10, fstream@^1.0.2:
     mkdirp ">=0.5 0"
     rimraf "2"
 
+funal@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.npmjs.org/funal/-/funal-0.0.1.tgz#84348c03ad2340b7a1590cf4e272a34ed0b14457"
+
 function-bind@^1.0.2, function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"

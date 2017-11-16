@@ -23,8 +23,11 @@ process.env.BABEL_ENV = 'production';
  */
 const
     cp = require('child_process'),
+    path = require('path'),
     webpack = require('webpack'),
-    config = require('../webpack.config');
+    config = require('../webpack.config'),
+    appendFile = require('./appendFile'),
+    dir = argv => path.resolve(__dirname, argv);
 
 
 /*
@@ -42,6 +45,7 @@ async function start() {
     // 移除目标路径
     cp.exec(`rm -rf ${config.output.path}/*`);
     cp.exec(`cp ${config.context}/test.html ${config.output.path}/test.html`);
+    cp.exec(`cp ${config.context}/1.jpeg ${config.output.path}/1.jpeg`);
 
 
     // 启动【App】打包
@@ -58,6 +62,13 @@ async function start() {
 
             // 返回编译结果
             resolve(compiler);
+
+            // 合并文件
+            appendFile(
+                dir('../dist/paper.min.js'),
+                dir('../public/polyfill.js'),
+                dir('../dist/paper.js')
+            );
         });
     });
 

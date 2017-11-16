@@ -12,7 +12,7 @@
  * 定义事件触发器
  *****************************************
  */
-export default class Event {
+export class EventEmitter {
 
     /* 初始化 */
     constructor() {
@@ -39,12 +39,16 @@ export default class Event {
         }
 
         // 添加事件
+<<<<<<< HEAD:src/views/lib/event.js
         if (name in this.$$events) {
             this.$$events[name].push(handler);
         } else {
             this.$$events[name] = [handler];
         }
 
+=======
+        name in this.$$events ? this.$$events[name].push(handler) : (this.$$events[name] = [handler]);
+>>>>>>> dev-1111:src/lib/event.js
         return this;
     }
 
@@ -97,3 +101,11 @@ export default class Event {
         return this;
     }
 }
+
+
+/**
+ *****************************************
+ * 抛出接口
+ *****************************************
+ */
+export default new EventEmitter();
