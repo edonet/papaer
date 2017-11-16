@@ -24,7 +24,7 @@ import format from './format';
  * 渲染组件
  *****************************************
  */
-export const render = (el, { id, curr, views = [], onTap, onChange } = {}) => {
+export const render = (el, { id, curr, mark, views = [], onTap, onChange } = {}) => {
     let store = localStore(id),
         swiper = new Swiper({ store, curr });
 
@@ -62,7 +62,7 @@ export const render = (el, { id, curr, views = [], onTap, onChange } = {}) => {
 
     // 添加视图
     views.forEach(view => swiper.append(
-        new Canvas({ id: view.id, url: view.path, store, data: format(view) })
+        new Canvas({ id: view.id, url: view.path, store, render: format({ mark, ...view }) })
     ));
 
     // 加载组件

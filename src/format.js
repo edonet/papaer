@@ -12,21 +12,24 @@
  * 抛出格式化数据接口
  *****************************************
  */
-export default ({ mark, positionList, problemList }) => {
+export default ({ mark, positionList, problemList }) => size => {
     let children = [],
         areaStyle = {
-            fill: 'white', 'fill-opacity': 0, stroke: 'red',
-            style: { strokeWidth: '.1em' }
+            'fill': 'white',
+            'fill-opacity': 0,
+            'stroke': 'red',
+            'stroke-width': '0.1em'
         },
         pointStyle = {
-            style: { r: '.8em', strokeWidth: '1em' }, strokeOpacity: 0
+            'r': '0.8em',
+            'stroke-width': '1em',
+            'stroke-opacity': 0
         };
 
 
     // 启用蒙层
     if (mark) {
-        let { width, height } = this.size,
-            d = `M0, 0v${height}h${width}v${- height}Z` + positionList.map(({ coordinate }) => {
+        let d = `M0, 0v${ size.height }h${ size.width }v${- size.height }Z` + positionList.map(({ coordinate }) => {
 
                 // 校验坐标是否为对象
                 if (!coordinate || typeof coordinate !== 'object') {

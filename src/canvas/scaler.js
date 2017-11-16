@@ -25,7 +25,7 @@ export default (view, size) => ({x, y, scale}) => {
         fontSize: `${ fontSize }px`,
         backgroundPosition: `${ x }px ${ y }px`,
         backgroundSize: `${ width }px ${ height }px`,
-        viewBox: `${ - x / viewScale } ${ - y / viewScale } ${ viewWidth } ${ viewWidth * view.ratio }`,
+        viewBox: `${ - x / viewScale } ${ - y / viewScale } ${ viewWidth } ${ 2 * viewWidth * view.ratio }`,
         canvas: { width, height }
     };
 };

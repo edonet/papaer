@@ -15,7 +15,7 @@
 import { uuid, imageLoader, assign } from '../lib';
 import { EventEmitter } from '../lib/event';
 import { createElement } from '../lib/element';
-import { updater, animate, easing, momentum } from '../lib/animater';
+import { updater, animate, easing } from '../lib/animater';
 import scaler from './scaler';
 
 
@@ -27,7 +27,7 @@ import scaler from './scaler';
 export default class Canvas extends EventEmitter {
 
     /* 初始化画布 */
-    constructor({ id = uuid(), url, data, store }) {
+    constructor({ id = uuid(), url, render, store }) {
         super();
 
         // 定义属性
@@ -87,7 +87,7 @@ export default class Canvas extends EventEmitter {
                 this.$$scaler = scaler(this.view, this.size);
 
                 // 更新图形内容
-                this.$$canvas = createElement(data);
+                this.$$canvas = createElement(render(this.size));
                 this.reset(this.update());
 
                 // 挂载图形内容
@@ -192,7 +192,6 @@ export default class Canvas extends EventEmitter {
 
         // 监听点击事件
         this.on('app:tap', data => {
-            console.log(data.sx);
             let rect = this.$$container.getBoundingClientRect(),
                 { x, y, scale } = this.state;
 

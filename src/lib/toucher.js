@@ -45,6 +45,9 @@ export default class Toucher extends EventEmitter {
     /* 触控开始事件 */
     onTouchStart(e, touches) {
 
+        // 阻止默认事件（修复【android】下【touchmove】只触发一次）
+        e.preventDefault();
+
         // 更新状态
         this.status = 'start';
 
@@ -53,9 +56,9 @@ export default class Toucher extends EventEmitter {
             let point = {};
 
             // 设置位置
-            point.sx = touch.pageX;
-            point.sy = touch.pageY;
-            point.st = + new Date();
+            point.sx = point.x = touch.pageX;
+            point.sy = point.y = touch.pageY;
+            point.st = point.t = + new Date();
 
             return point;
         });
@@ -79,6 +82,9 @@ export default class Toucher extends EventEmitter {
         if (this.status === 'pending') {
             return this.onTouchStart(e, touches);
         }
+
+        // 阻止默认事件（修复【android】下【touchend】不触发）
+        e.preventDefault();
 
         // 更新状态
         this.status = 'touching';
@@ -124,7 +130,12 @@ export default class Toucher extends EventEmitter {
     }
 
     /* 触控结束事件 */
-    onTouchEnd(e, touches) {
+    onTouchEnd(e) {
+
+        // 过滤多次执行
+        if (this.status === 'pending') {
+            return false;
+        }
 
         // 更新状态
         this.status = 'pending';
@@ -133,9 +144,9 @@ export default class Toucher extends EventEmitter {
         this.emit('touchEnd', e, this.touches);
 
         // 移动手势
-        if (touches.length === 0) {
-            let { st, direction } = this.touches[0],
-                tap = !this.disableTap && !direction && new Date() - st < 500;
+        if (this.touches.length === 1) {
+            let { st, x, y, sx, sy } = this.touches[0],
+                tap = !this.disableTap && new Date() - st < 1000 && Math.abs(x - sx) < 10 && Math.abs(y - sy) < 10;
 
             // 移动手势
             this.disableTap = false;

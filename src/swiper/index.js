@@ -230,7 +230,7 @@ export default class Swiper extends EventEmitter {
 
     /* 移动到指定位置 */
     translateTo(x = 0) {
-        if (x !== this.$$x) {
+        if (x !== this.$$x && this.$$container) {
             this.$$x = x;
             assign(this.$$container.style, transform({ x: x + '%' }));
         }
