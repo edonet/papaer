@@ -1,10 +1,11 @@
 /**
  *****************************************
  * Created by lifx
- * Created on 2017-11-08 14:24:35
+ * Created on 2017-11-16 09:09:32
  *****************************************
  */
 'use strict';
+
 
 
 /**
@@ -12,11 +13,13 @@
  * 加载依赖
  *****************************************
  */
+import React from 'react';
+import { render as renderComponent, unmountComponentAtNode } from 'react-dom';
 import element from './lib/element';
 import localStore from './lib/localStore';
-import Swiper, { unmount as unmountSwiper } from './swiper';
-import Canvas from './canvas';
-import format from './format';
+import event from './lib/event';
+import AppSwiper from './app-swiper';
+import AppCanvas from './app-canvas';
 
 
 /**
@@ -26,50 +29,17 @@ import format from './format';
  */
 export const render = (el, { id, curr, mark, views = [], onTap, onChange } = {}) => {
     let store = localStore(id),
-        swiper = new Swiper({ store, curr });
+        props = {
+            id, curr, store, event, onChange
+        };
 
 
-    // 添加切换事件
-    swiper.on('change', onChange);
-
-    // 添加点击事件
-    swiper.on('tap', (e = {}, [touch]) => {
-        if (touch && touch.sx) {
-            let target = e.target || {},
-                name = target.tagName,
-                id = '',
-                type = '';
-
-            // 过滤蒙层
-            if (target.getAttribute('fill-rule') === 'evenodd') {
-                return;
-            }
-
-            // 获取数据类型
-            if (name === 'circle') {
-                type = 'point';
-                id = target.getAttribute('id');
-            } else if (name === 'path' || name === 'rect') {
-                type = 'area';
-                id = target.getAttribute('id');
-            }
-
-            // 执行点击回调
-            onTap && onTap({ id, type, x: touch.sx, y: touch.sy });
-        }
-    });
-
-
-    // 添加视图
-    views.forEach(view => swiper.append(
-        new Canvas({ id: view.id, url: view.path, store, render: format({ mark, ...view }) })
-    ));
-
-    // 加载组件
-    element(el).map(el => swiper.mount(unmountSwiper(el)));
-
-    // 返回插件
-    return swiper;
+    // 渲染组件
+    return element(el).map(target => renderComponent((
+        <AppSwiper { ...props }>
+            { views.map(view => <AppCanvas key={ view.id } { ...view } store={ store } event={ event } mark={ mark } />) }
+        </AppSwiper>
+    ), target));
 };
 
 
@@ -79,6 +49,5 @@ export const render = (el, { id, curr, mark, views = [], onTap, onChange } = {})
  *****************************************
  */
 export const unmount = (
-    id => element(id).map(unmountSwiper)
+    id => element(id).map(unmountComponentAtNode)
 );
-

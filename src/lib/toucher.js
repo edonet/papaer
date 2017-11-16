@@ -46,7 +46,7 @@ export default class Toucher extends EventEmitter {
     onTouchStart(e, touches) {
 
         // 阻止默认事件（修复【android】下【touchmove】只触发一次）
-        e.preventDefault();
+        // e.preventDefault();
 
         // 更新状态
         this.status = 'start';
@@ -84,7 +84,7 @@ export default class Toucher extends EventEmitter {
         }
 
         // 阻止默认事件（修复【android】下【touchend】不触发）
-        e.preventDefault();
+        // e.preventDefault();
 
         // 更新状态
         this.status = 'touching';
@@ -158,28 +158,6 @@ export default class Toucher extends EventEmitter {
         this.disableTap = true;
     }
 
-    /* 获取缩放属性 */
-    getScale() {
-
-        // 支持缩放
-        if (this.touches.length > 1) {
-            let [p1, p2] = this.touches,
-                r1 = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)),
-                r2 = Math.sqrt(Math.pow(p1.ox - p2.ox, 2) + Math.pow(p1.oy - p2.oy, 2)),
-                c1 = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 },
-                c2 = { x: (p1.ox + p2.ox) / 2, y: (p1.oy + p2.oy) / 2 },
-                scale = r1 / r2;
-
-            return {
-                scale,
-                dx: c1.x - scale * c2.x,
-                dy: c1.y - scale * c2.y
-            };
-        }
-
-        return null;
-    }
-
     /* 绑定到元素 */
     mountTo(target) {
         target.addEventListener('touchstart', this.handler.touchStart, false);
@@ -194,6 +172,16 @@ export default class Toucher extends EventEmitter {
         target.removeEventListener('touchmove', this.handler.touchMove, false);
         target.removeEventListener('touchend', this.handler.touchEnd, false);
         target.removeEventListener('touchcancel', this.handler.touchEnd, false);
+    }
+
+    /* 生成绑定函数 */
+    eventHandler() {
+        return {
+            onTouchStart: this.handler.touchStart,
+            onTouchMove: this.handler.touchMove,
+            onTouchEnd: this.handler.touchEnd,
+            onTouchCancel: this.handler.touchEnd
+        };
     }
 }
 

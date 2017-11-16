@@ -39,16 +39,12 @@ export class EventEmitter {
         }
 
         // 添加事件
-<<<<<<< HEAD:src/views/lib/event.js
         if (name in this.$$events) {
             this.$$events[name].push(handler);
         } else {
             this.$$events[name] = [handler];
         }
 
-=======
-        name in this.$$events ? this.$$events[name].push(handler) : (this.$$events[name] = [handler]);
->>>>>>> dev-1111:src/lib/event.js
         return this;
     }
 
