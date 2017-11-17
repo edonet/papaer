@@ -29,15 +29,62 @@ import AppCanvas from './app-canvas';
  */
 export const render = (el, { id, curr, mark, views = [], onTap, onChange } = {}) => {
     let store = localStore(id),
-        props = {
-            id, curr, store, event, onChange
-        };
+        props = { curr },
+        onTapHanlder = onTap && (({ event, touches: [touch] }) => {
+            if (touch && 'x' in touch) {
+                let target = event.target || {},
+                    name = target.tagName,
+                    id = '',
+                    type = '';
 
+                // 过滤蒙层
+                if (target.getAttribute('fill-rule') === 'evenodd') {
+                    return;
+                }
+
+                // 获取数据类型
+                if (name === 'circle') {
+                    type = 'point';
+                    id = target.getAttribute('id');
+                } else if (name === 'path' || name === 'rect') {
+                    type = 'area';
+                    id = target.getAttribute('id');
+                }
+
+                // 执行点击回调
+                onTap({ id, type, ...touch });
+            }
+        });
+
+
+    // 设置当前视图
+    if (typeof props.curr !== 'number') {
+        props.curr = store.get('view');
+    }
+
+    // 设置切换回调
+    props.onChange = view => {
+        store.set({ view });
+        onChange && onChange(view);
+    };
 
     // 渲染组件
     return element(el).map(target => renderComponent((
         <AppSwiper { ...props }>
-            { views.map(view => <AppCanvas key={ view.id } { ...view } store={ store } event={ event } mark={ mark } />) }
+            {
+                views.map((view, idx) => {
+                    let key = view.id || idx,
+                        props = {
+                            ...view,
+                            mark,
+                            scale: store.get(key),
+                            onTap: onTapHanlder,
+                            onScale: state => store.set({ [key]: state })
+                        };
+
+                    return <AppCanvas key={ key } { ...props } />;
+                })
+            }
         </AppSwiper>
     ), target));
 };
