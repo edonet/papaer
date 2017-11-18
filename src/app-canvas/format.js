@@ -9,29 +9,37 @@
 
 /**
  *****************************************
+ * 加载依赖
+ *****************************************
+ */
+import { uuid } from '../lib';
+
+
+/**
+ *****************************************
  * 抛出格式化数据接口
  *****************************************
  */
-export default ({ mark, positionList, problemList, size, url }) => {
+export default ({ id: key = uuid(), mark, positionList, problemList, size, url }) => {
     let children = [],
         areaStyle = {
-            'fill': 'white',
-            'fill-opacity': 0,
-            'stroke': 'red',
-            'stroke-width': '0.1em'
+            fill: 'white',
+            fillOpacity: 0,
+            stroke: 'red',
+            strokeWidth: '0.1em'
         },
         pointStyle = {
-            'r': '0.8em',
-            'stroke-width': '1em',
-            'stroke-opacity': 0
+            r: '0.8em',
+            strokeWidth: '1em',
+            strokeOpacity: 0
         };
 
 
     // 添加图片
-    // children.push({
-    //     name: 'image',
-    //     props: { xlinkHref: url, x: 0, y: 0, width: size.width, height: size.height }
-    // });
+    children.push({
+        name: 'image',
+        props: { key: key + ':image', xlinkHref: url, width: size.width, height: size.height }
+    });
 
     // 启用蒙层
     if (mark) {
@@ -56,7 +64,7 @@ export default ({ mark, positionList, problemList, size, url }) => {
         // 添加蒙层
         children.push({
             name: 'path',
-            props: { d, key: 'mark', fill: 'black', 'fill-opacity': .3, 'fill-rule': 'evenodd', stroke: 'none' }
+            props: { d, key: key + ':mark', fill: 'black', fillOpacity: .3, fillRule: 'evenodd', stroke: 'none' }
         });
     }
 
@@ -74,7 +82,7 @@ export default ({ mark, positionList, problemList, size, url }) => {
             return children.push({
                 name: 'path',
                 props: {
-                    id, key: id, ...areaStyle,
+                    id, key: `${key}(${children.length}:${id}`, ...areaStyle,
                     d: 'M' + coordinate.map(p => p.join(', ')).join('L') + 'Z'
                 }
             });
@@ -82,7 +90,7 @@ export default ({ mark, positionList, problemList, size, url }) => {
             return children.push({
                 name: 'rect',
                 props: {
-                    id, key: id, ...areaStyle, ...coordinate
+                    id, key: `${key}(${children.length}:${id}`, ...areaStyle, ...coordinate
                 }
             });
         }
@@ -92,7 +100,7 @@ export default ({ mark, positionList, problemList, size, url }) => {
     problemList && problemList.forEach(({ id, color = 'red', coordinate: { x, y } }) => children.push({
         name: 'circle',
         props: {
-            id, key: id, fill: color, ...pointStyle, cx: x, cy: y
+            id, key: `${key}(${children.length}:${id}`, fill: color, ...pointStyle, cx: x, cy: y
         }
     }));
 

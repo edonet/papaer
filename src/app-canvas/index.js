@@ -13,7 +13,7 @@
  *****************************************
  */
 import React, { Component, createElement } from 'react';
-import { assign, imageLoader } from '../lib';
+import { imageLoader, imageResizer } from '../lib';
 import { updater, animate, easing } from '../lib/animater';
 import AppToucher from '../app-toucher';
 import format from './format';
@@ -27,20 +27,23 @@ import scaler from './scaler';
  */
 const
     boxStyle = {
-        position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, overflow: 'hidden'
+        display: 'block', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, overflow: 'hidden'
+    },
+    svgProps = {
+        x: '0',
+        y: '0',
+        width: '100%',
+        height: '100%',
+        preserveAspectRatio: 'xMidYMin slice'
     },
     svgStyle = {
-        'x': '0',
-        'y': '0',
-        'width': '100%',
-        'height': '100%',
-        'preserveAspectRatio': 'xMidYMin slice',
-        'style': {
-            'display': 'block',
-            'position': 'relative',
-            'left': '-0.5px',
-            'overflow': 'hidden'
-        }
+        display: 'block',
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        overflow: 'hidden'
     };
 
 
@@ -60,12 +63,12 @@ export default class AppCanvas extends Component {
         this.$$canvas = null;
         this.$$scaler = null;
         this.$$animater = null;
+        this.$$image = null;
         this.$$updater = updater();
         this.$$ease = easing('ease-out');
         this.$$size = { width: 0, height: 0 };
         this.$$view = { width: 0, height: 0 };
         this.$$paper = { width: 0, height: 0, cx: 0, cy: 0 };
-        this.$$state = { x: 0, y: 0, scale: 1, ...props.scale };
         this.$$snap = false;
 
         // 定义事件监听器
@@ -79,7 +82,9 @@ export default class AppCanvas extends Component {
             onScale: this.handleScale.bind(this)
         };
 
+
         // 定义图片加载器
+        this.$$resizer = imageResizer();
         this.$$loader = imageLoader((err, image) => {
 
             // 加载图片失败
@@ -90,7 +95,7 @@ export default class AppCanvas extends Component {
             // 更新视图大小
             this.$$view.width = this.$$target.clientWidth;
             this.$$view.height = this.$$target.clientHeight;
-            this.$$view.ratio = this.$$view.height / this.$$view.height;
+            this.$$view.ratio = this.$$view.height / this.$$view.width;
 
             // 更新画布尺寸
             this.$$size.width = image.width;
@@ -107,19 +112,13 @@ export default class AppCanvas extends Component {
             // 生成更新器
             this.$$scaler = scaler(this.$$view, this.$$size);
 
-            // 更新户型图
-            this.$$target.style.background = `url(${image.src}) no-repeat`;
-            this.reset(1, this.update());
-
             // 更新状态
-            this.setState({ url: image.src });
+            this.setState({ url: this.$$resizer(image) });
+            this.reset(0);
         });
 
         // 定义状态
-        this.state = { url: '' };
-
-        // 加载图片
-        this.$$loader(this.props.path);
+        this.state = { url: '', x: 0, y: 0, scale: 1, ...props.scale };
     }
 
     /* 接收属性 */
@@ -129,25 +128,33 @@ export default class AppCanvas extends Component {
 
     /* 渲染组件 */
     render() {
+        let { viewBox, fontSize } = this.update() || {};
 
         return (
             <AppToucher style={ boxStyle } { ...this.$$events }>
-                <svg ref={el => this.$$canvas = el} { ...svgStyle }>
+                <svg
+                    ref={el => this.$$canvas = el}
+                    { ...svgProps }
+                    viewBox={ viewBox }
+                    style={{ ...svgStyle, fontSize }}>
                     { this.state.url && this.renderCanvas() }
                 </svg>
             </AppToucher>
         );
     }
 
-    /* 渲染图形 */
+    /* 监听组件挂载完成 */
+    componentDidMount() {
 
-
+        // 加载图片
+        this.$$loader(this.props.path);
+    }
 
     /* 渲染画布 */
     renderCanvas() {
-        let { mark, positionList, problemList } = this.props,
+        let { id, mark, positionList, problemList } = this.props,
             data = {
-                mark, positionList, problemList, size: this.$$size, url: this.state.url
+                id, mark, positionList, problemList, size: this.$$size, url: this.state.url
             };
 
         // 加载对象
@@ -156,45 +163,41 @@ export default class AppCanvas extends Component {
         );
     }
 
-    /* 更新视图 */
-    update(state = this.$$state) {
+    /* 更新状态 */
+    updateState({ x = this.state.x, y = this.state.y, scale = this.state.scale }) {
+        let change = (
+                x !== this.state.x ||
+                y !== this.state.y ||
+                scale !== this.state.scale
+            );
 
-        if (state.x === null) {
-            debugger;
+        // 更新状态
+        if (change) {
+            this.setState({ x, y, scale });
+            this.props.onScale && this.props.onScale({ x, y, scale });
         }
+    }
+
+    /* 更新视图 */
+    update(state = this.state) {
 
         // 判断是否已经加载
         if (this.$$canvas && this.$$scaler) {
             let {
-                    backgroundPosition,
-                    backgroundSize,
-                    viewBox,
-                    fontSize,
-                    canvas
+                    viewBox, fontSize, canvas
                 } = this.$$scaler(state);
-
 
             // 更新图形
             this.$$paper = { ...this.$$paper, ...canvas };
-            this.$$canvas.setAttribute('viewBox', viewBox);
 
-            // 更新状态
-            if (state !== this.$$state) {
-                this.$$state = { ...this.$$state, ...state };
-            }
-
-            // 执行回调
-            this.props.onScale && this.props.onScale(this.$$state);
-
-            // 更新样式
-            assign(this.$$canvas.style, { fontSize });
-            assign(this.$$target.style, { backgroundSize, backgroundPosition });
+            // 返回配置
+            return { viewBox, fontSize };
         }
     }
 
     /* 重置视图 */
     reset(duration = 300) {
-        let { x, y, scale } = this.$$state,
+        let { x, y, scale } = this.state,
             { cx, cy } = this.$$paper,
             newScale = Math.max(1, Math.min(scale, this.$$size.maxScale)),
             width = newScale * this.$$size.scale * this.$$size.width,
@@ -216,15 +219,21 @@ export default class AppCanvas extends Component {
 
         // 执行动画
         if (dx || dy || ds) {
-            this.$$animater && this.$$animater.stop();
-            this.$$animater = animate(duration, progress => {
-                progress = this.$$ease(progress);
-                this.update({
-                    x: x + dx * progress,
-                    y: y + dy * progress,
-                    scale: scale + ds * progress
+            if (duration) {
+                this.$$animater && this.$$animater.stop();
+                this.$$animater = animate(duration, progress => {
+                    progress = this.$$ease(progress);
+                    this.updateState({
+                        x: x + dx * progress,
+                        y: y + dy * progress,
+                        scale: scale + ds * progress
+                    });
                 });
-            });
+            } else {
+                this.updateState({
+                    x: x + dx, y: y + dy, scale: scale + ds
+                });
+            }
         }
     }
 
@@ -232,7 +241,7 @@ export default class AppCanvas extends Component {
     handleTap({ event, touches: [touch] }) {
         if (this.props.onTap && touch) {
             let rect = this.$$target.getBoundingClientRect(),
-                { x, y, scale } = this.$$state;
+                { x, y, scale } = this.state;
 
             // 获取位置
             scale *= this.$$size.scale;
@@ -253,22 +262,20 @@ export default class AppCanvas extends Component {
     handleMove({ event, touches: [touch] }) {
         if (this.$$scaler) {
             let { width } = this.$$paper,
-                x = touch.dx + this.$$state.x;
+                x = touch.dx + this.state.x;
 
             // 阻止父级移动
             if (!this.$$snap && x < 0 && x > this.$$view.width - width) {
                 event.stopPropagation();
             } else {
                 this.$$snap = true;
-                x = this.$$state.x;
+                x = this.state.x;
             }
 
-            // 更新状态
-            this.$$state.x = x;
-            this.$$state.y = this.$$state.y + touch.dy;
-
             // 更新画布
-            this.$$updater(() => this.update());
+            this.updateState({
+                x, y: this.state.y + touch.dy
+            });
         }
     }
 
@@ -291,10 +298,10 @@ export default class AppCanvas extends Component {
                 let stop = (
                         progress >= 1 ||
                         (Math.abs(dx) < 1 && Math.abs(dy) < 1) ||
-                        this.$$state.x > 0 ||
-                        this.$$state.y > 0 ||
-                        this.$$state.x < this.$$view.width - this.$$paper.width ||
-                        this.$$state.y < this.$$view.height - this.$$paper.height
+                        this.state.x > 0 ||
+                        this.state.y > 0 ||
+                        this.state.x < this.$$view.width - this.$$paper.width ||
+                        this.state.y < this.$$view.height - this.$$paper.height
                     );
 
 
@@ -303,12 +310,11 @@ export default class AppCanvas extends Component {
                     return this.reset() || false;
                 }
 
-                // 更新属性
-                this.$$state.x += dx;
-                this.$$state.y += dy;
-
                 // 更新画布
-                this.update();
+                this.updateState({
+                    x: this.state.x + dx,
+                    y: this.state.y + dy
+                });
             });
         }
     }
@@ -318,14 +324,11 @@ export default class AppCanvas extends Component {
 
         // 处理缩放
         if (this.$$scaler) {
-            let { x, y, scale, cx, cy } = scaler(this.$$state);
-
-            // 更新属性
-            this.$$state = { x, y, scale };
+            let { x, y, scale, cx, cy } = scaler(this.state);
 
             // 更新画布
             this.$$paper = { ...this.$$paper, cx, cy };
-            this.$$updater(() => this.update());
+            this.updateState({ x, y, scale });
         }
 
         // 阻止冒泡
