@@ -9,6 +9,14 @@
 
 /**
  *****************************************
+ * 加载依赖
+ *****************************************
+ */
+const path = require('path');
+
+
+/**
+ *****************************************
  * 抛出配置
  *****************************************
  */
@@ -25,6 +33,7 @@ module.exports = {
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
     },
     watchContentBase: true,
+    contentBase: path.resolve(__dirname, '../public'),
     watchOptions: {
         ignored: /node_modules/
     },

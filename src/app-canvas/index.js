@@ -139,11 +139,15 @@ export default class AppCanvas extends Component {
         );
     }
 
+    /* 渲染图形 */
+
+
+
     /* 渲染画布 */
     renderCanvas() {
         let { mark, positionList, problemList } = this.props,
             data = {
-                mark, positionList, problemList, size: this.$$size
+                mark, positionList, problemList, size: this.$$size, url: this.state.url
             };
 
         // 加载对象

@@ -12,7 +12,7 @@
  * 抛出格式化数据接口
  *****************************************
  */
-export default ({ mark, positionList, problemList, size }) => {
+export default ({ mark, positionList, problemList, size, url }) => {
     let children = [],
         areaStyle = {
             'fill': 'white',
@@ -26,6 +26,12 @@ export default ({ mark, positionList, problemList, size }) => {
             'stroke-opacity': 0
         };
 
+
+    // 添加图片
+    // children.push({
+    //     name: 'image',
+    //     props: { xlinkHref: url, x: 0, y: 0, width: size.width, height: size.height }
+    // });
 
     // 启用蒙层
     if (mark) {

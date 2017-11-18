@@ -56,7 +56,6 @@ async function start() {
 
     // 配置服务器输出信息
     devServer.stats = config.stats;
-    devServer.contentBase = config.output.path;
 
     // 添加热更新插件
     config.plugins = [

@@ -34,7 +34,7 @@ export default {
         },
         {
             id: 10,
-            path: '1.jpeg',
+            path: './img/1.jpeg',
             positionList: [
                 {
                     id: 'f318b02b-c062-ee9f-8b54-fe986aa611d2',
