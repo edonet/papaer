@@ -9,21 +9,32 @@
 
 /**
  *****************************************
+ * 定义存储属性
+ *****************************************
+ */
+const
+    localStorageKey = '$app/paper_store';
+
+
+/**
+ *****************************************
  * 定义工具方法
  *****************************************
  */
-function getLocalStore(key) {
-    let val = localStorage.getItem(key);
+function getLocalStore($$key) {
+    let val = localStorage.getItem(localStorageKey),
+        store = { $$key };
 
     if (val) {
         try {
-            return JSON.parse(val);
+            val = JSON.parse(val);
+            return val.$$key === $$key ? val : store;
         } catch (e) {
-            return {};
+            return store;
         }
     }
 
-    return {};
+    return store;
 }
 
 
@@ -42,7 +53,7 @@ export default function localStore(id) {
                 timeStamp && clearTimeout(timeStamp);
                 timeStamp = setTimeout(() => {
                     timeStamp = null;
-                    localStorage.setItem(key, JSON.stringify(model));
+                    localStorage.setItem(localStorageKey, JSON.stringify(model));
                 }, 500);
             }
         };

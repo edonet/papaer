@@ -220,7 +220,7 @@ export default class AppToucher extends Component {
 
                 // 执行点击事件
                 if (tap) {
-                    this.props.onTap({ event: e, touches: this.$$touches });
+                    return this.props.onTap({ event: e, touches: this.$$touches });
                 }
             }
 

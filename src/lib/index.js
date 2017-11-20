@@ -36,11 +36,17 @@ export const imageLoader = callback => url => {
  * 缩放图片
  *****************************************
  */
+let imageCache = {};
 export const imageResizer = (width = 1024, height = 0) => image => {
 
     // 判断是否需要缩放
     if (image.width < width) {
         return image.src;
+    }
+
+    // 从缓存中获取
+    if (image.src in imageCache) {
+        return imageCache[image.src];
     }
 
     let canvas = document.createElement('canvas'),

@@ -123,6 +123,7 @@ export default class AppCanvas extends Component {
 
     /* 接收属性 */
     componentWillReceiveProps(props) {
+        this.setState({ ...this.state, ...props.scale });
         props.path !== this.props.path && this.$$loader(props.path);
     }
 

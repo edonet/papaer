@@ -64,9 +64,9 @@ async function start() {
             // 合并文件
             appendFile(
                 dir('../dist/paper.min.js'),
-                dir('../public/polyfill.js'),
-                dir('../public/react.min.js'),
-                dir('../public/react-dom.min.js'),
+                dir('../public/js/polyfill.js'),
+                dir('../public/js/react.min.js'),
+                dir('../public/js/react-dom.min.js'),
                 dir('../dist/paper.js')
             );
         });
